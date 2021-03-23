@@ -8,21 +8,22 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
+#include <allegro5/allegro_color.h>
 #include <iostream>
 #include <stdio.h>
 
-ALLEGRO_DISPLAY* display;
-ALLEGRO_EVENT_QUEUE* queue;
-ALLEGRO_TIMER* timer;
-ALLEGRO_FONT* font;
-ALLEGRO_BITMAP* bitmapBackground;
-ALLEGRO_BITMAP* bitmapBabyBlob;
-ALLEGRO_BITMAP* bitmapGrownBlob;
-ALLEGRO_BITMAP* bitmapGoodOldBlob;
-ALLEGRO_BITMAP* bitmapFood;
+static ALLEGRO_DISPLAY* display;
+static ALLEGRO_EVENT_QUEUE* queue;
+static ALLEGRO_TIMER* timer;
+static ALLEGRO_FONT* font;
+static ALLEGRO_BITMAP* bitmapBackground;
+static ALLEGRO_BITMAP* bitmapBabyBlob;
+static ALLEGRO_BITMAP* bitmapGrownBlob;
+static ALLEGRO_BITMAP* bitmapGoodOldBlob;
+static ALLEGRO_BITMAP* bitmapFood;
 
-ALLEGRO_EVENT event;
-ALLEGRO_KEYBOARD_STATE keyState;
+static ALLEGRO_EVENT event;
+static ALLEGRO_KEYBOARD_STATE keyState;
 
 using namespace std;
 
@@ -42,7 +43,7 @@ void initializeAllegro()
     queue = al_create_event_queue();
     display = al_create_display(DISPLAYWIDTH, DISPLAYHEIGHT);
     timer = al_create_timer(1.0 / 60.0);
-    //font = al_load_ttf_font("arial.ttf", 30, 0);
+    font = al_load_ttf_font("DelaGothicOne-Regular.ttf", 12, 0);
     bitmapBackground = al_load_bitmap("background.jpg");
     bitmapBabyBlob = al_load_bitmap("babyblob.png");
     bitmapGrownBlob = al_load_bitmap("grownblob.png");
@@ -55,9 +56,9 @@ void initializeAllegro()
     al_register_event_source(queue, al_get_display_event_source(display));
     al_register_event_source(queue, al_get_timer_event_source(timer));
 
-    /*if (font == NULL) {
+    if (font == NULL) {
         cout << "Failed to load arial.ttf" << endl;
-    }*/
+    }
 
     if (bitmapBackground == NULL) {
         cout << "Failed to load background.jpg" << endl;
@@ -79,10 +80,8 @@ void initializeAllegro()
 void drawWorld(World& world) {
     al_start_timer(timer);
 
-
-    //GAME LOOP
-
     al_draw_bitmap(bitmapBackground, 0.0, 0.0, 0);
+
     for (unsigned int i = 0; i < world.blobCounter; i++) {
         switch (world.nBlobs[i].age) {
         case BABY:
@@ -100,6 +99,14 @@ void drawWorld(World& world) {
     for (unsigned int j = 0; j < world.foodTotal; j++) {
         al_draw_bitmap(bitmapFood, world.nFood[j].foodPos.x, world.nFood[j].foodPos.y, 0);
     }
+
+    char temp[50];
+    char traslate[10];
+
+    /*itoa(world.velPorcentage, traslate, 5);
+    sprintf_s(temp, "Vel Porcentage: %s", traslate);
+    al_draw_text(font, al_color_name("black"), DISPLAYWIDTH /7 , DISPLAYHEIGHT- 50, ALLEGRO_ALIGN_CENTER, temp);*/
+
 
     al_flip_display();
 

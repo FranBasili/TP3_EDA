@@ -23,7 +23,7 @@ BLOBRAND:
 ****************************************************************/
 void Blob::blobRand(int velMax_, int i, int modo, int muertesPorcentaje[])
 {
-    srand(time(NULL) * i * 500);
+    //srand(time(NULL) * (i+1) * 500);
     blobPos.x = (double)(rand() % DISPLAYWIDTH);           //checkear los maximos valores que puede obtener
     blobPos.y = (double)(rand() % DISPLAYHEIGHT);
     age = (int)(1 + rand() % 3);                                //se asigna una edad aleatoria, va de 1 a 3
@@ -74,9 +74,9 @@ void nacer(Blob objeto[], unsigned int& blobCounter)            //FUNCION a disc
 {
     for (int i = 0; i < blobCounter; i++)
     {
-        if ((objeto[i].age == BABY && objeto[i].foodCount == BABYFULL) ||
-            (objeto[i].age == GROWN && objeto[i].foodCount == GROWNFULL) ||
-            (objeto[i].age == OLD && objeto[i].foodCount == OLDFULL))
+        if ((objeto[i].age == BABY && objeto[i].foodCount >= BABYFULL) ||
+            (objeto[i].age == GROWN && objeto[i].foodCount >= GROWNFULL) ||
+            (objeto[i].age == OLD && objeto[i].foodCount >= OLDFULL))
         {
             objeto[i].foodCount = 0;                                        //se reinicia el contador de alimentos xq pario un hijo
             objeto[blobCounter].blobLocate(objeto[i].blobPos.x + SON_DIST, objeto[i].blobPos.y + SON_DIST);  //se le asigna la posicion al hijo
@@ -244,15 +244,15 @@ void comer(Blob blobs[], Food foods[], int blobCounter, int cantFood)
         
         for (int j = 0, comiendo = false; j < cantFood && comiendo == false; j++)
         {
-            if (intersection_check(foods[j].foodPos, blobs[i].blobPos, 0 , blobs[i].age) && foods[j].isAlive == true)
+            if ( (intersection_check(foods[j].foodPos, blobs[i].blobPos, 0 , blobs[i].age)) && (foods[j].isAlive == true) )
             {
-                std::cout << "B:" << i << "Comiendo fruta" << j << std::endl;
                 blobs[i].foodCount++;
                 foods[j].isAlive = false;
                 comiendo = true;
             }
         }
     }
+
     respawn_food(foods, cantFood);
 }
 
@@ -302,7 +302,7 @@ FUSION:
 ****************************************************************/
 void Blob::fusion(Blob blob2, int blob2Index, unsigned int& blobCounter, int randomJiggleLimit)
 {
-    srand(time(NULL) * blob2Index);
+    //srand(time(NULL) * (blob2Index+1));
     velMax = (velMax + blob2.velMax) / 2;                           // Calculamos el promedio de las velocidades.
 
     int randomJiggle = rand() % randomJiggleLimit;                  // Definimos el angulo aleatorio.
@@ -320,28 +320,39 @@ MORIR:
         1. Blob objeto[]: recibe un arreglo de blobs
         2. int& blobCounter: recibe una referencia a la cantidad de blob en el mundo
 
-    Retorna: void
+    Retorna:    0 si no hay blobs vivos.
+                1 si hay algún blob vivo.
 ****************************************************************/
 int morir(Blob objeto[], unsigned int& blobCounter) {
 
+    static int contador = 0;
 
-    for (unsigned int i = 0; i < blobCounter; i++) {
-        srand(time(NULL) * (i + 1) * 1000);
-        if (objeto[i].isAlive == true) {
-            int probabilidad = ((rand() % 100) + 1);
-            std::cout << "Prob: " << probabilidad << "\t Tick:" << objeto[i].tickAlive << std::endl;
-            if (probabilidad >= objeto[i].tickAlive) {
-                objeto[i].isAlive = false;
-                swap(objeto, i, blobCounter);
-                blobCounter--;
+    if ((contador++) < TICKS_PER_DEATH)     // Si no pasaron la cantidad de ticks necesarios,
+    {                                       //no asesinamos a nadie.
+        return 1;                           
+    }
+    else
+    {   
+        contador = 0;
+        for (unsigned int i = 0; i < blobCounter; i++) {
+            if (objeto[i].isAlive == true) {
+                int probabilidad = ((rand() % 100) + 1);
+                std::cout << "Prob:  " << probabilidad << "\t Tick:" << objeto[i].tickAlive;
+                if (probabilidad >= objeto[i].tickAlive) {
+                    objeto[i].isAlive = false;
+                    swap(objeto, i, blobCounter);
+                    blobCounter--;
+                    std::cout << " \t MUERTO";
+                }
+                std::cout << std::endl;
             }
         }
-    }
 
-    if (blobCounter == 0)       // Si no quedaron blobs vivos, retorno 0.
-        return 0;
-    else
-        return 1;               // Si ha blobs vivos, sigo corriendo la simulacion
+        if (blobCounter == 0)       // Si no quedaron blobs vivos, retorno 0.
+            return 0;
+        else
+            return 1;               // Si ha blobs vivos, sigo corriendo la simulacion
+    }
 }
 
 
@@ -378,14 +389,15 @@ int intersection_check(Position	pos1, Position pos2, int obj1, int obj2)
     int margenes[4] = { FOOD_IMG_SIZE, BABY_IMG_SIZE, GROWN_IMG_SIZE, OLD_IMG_SIZE };
 
     // Calculamos los vertices del objeto 1.
-    Position vertices1[4];
+    Position vertices1[5];
     vertices1[0] = { pos1.x - margenes[obj1] / 2, pos1.y - margenes[obj1] / 2 };
     vertices1[1] = { pos1.x - margenes[obj1] / 2, pos1.y + margenes[obj1] / 2 };
     vertices1[2] = { pos1.x + margenes[obj1] / 2, pos1.y - margenes[obj1] / 2 };
     vertices1[3] = { pos1.x + margenes[obj1] / 2, pos1.y + margenes[obj1] / 2 };
+    vertices1[4] = { pos1.x                     , pos1.y                      };
 
     //Reviso si alguno de los 4 vertices del obj1 esta dentro del obj 2
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 5; i++)
     {
         if (vertices1[i].x < (pos2.x + margenes[obj2] / 2) && vertices1[i].x >(pos2.x - margenes[obj2] / 2) &&
             vertices1[i].y < (pos2.y + margenes[obj2] / 2) && vertices1[i].y >(pos2.y - margenes[obj2] / 2))

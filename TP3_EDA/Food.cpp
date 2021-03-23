@@ -13,7 +13,7 @@ FOODRAND:
 ****************************************************************/
 void Food::foodRand(int i)
 {
-    srand(time(NULL) * i *1000);
+    //srand(time(NULL) * (i+1) *1000);
     foodPos.x = (double)(rand() % DISPLAYWIDTH);           //checkear los maximos valores que puede obtener
     foodPos.y = (double)(rand() % DISPLAYHEIGHT);
 }
