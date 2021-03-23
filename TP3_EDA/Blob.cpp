@@ -21,9 +21,8 @@ BLOBRAND:
 
     Retorna: void
 ****************************************************************/
-void Blob::blobRand(int velMax_, int i, int modo, int muertesPorcentaje[])
+void Blob::blobRand(int velMax_, int i, int modo, float muertesPorcentaje[])
 {
-    //srand(time(NULL) * (i+1) * 500);
     blobPos.x = (double)(rand() % DISPLAYWIDTH);           //checkear los maximos valores que puede obtener
     blobPos.y = (double)(rand() % DISPLAYHEIGHT);
     age = (int)(1 + rand() % 3);                                //se asigna una edad aleatoria, va de 1 a 3
@@ -141,8 +140,8 @@ MOVERBLOB:
 ****************************************************************/
 void Blob::moverBlob(double velPorcentaje)
 {
-    blobPos.x += velMax * (velPorcentaje /100) * cos(angle * PI /180);
-    blobPos.y += velMax * (velPorcentaje /100) * sin(angle * PI / 180);
+    blobPos.x += velMax * velPorcentaje * cos(angle * PI /180);
+    blobPos.y += velMax * velPorcentaje * sin(angle * PI / 180);
 
     if (blobPos.x >= DISPLAYWIDTH)
     {
@@ -302,7 +301,6 @@ FUSION:
 ****************************************************************/
 void Blob::fusion(Blob blob2, int blob2Index, unsigned int& blobCounter, int randomJiggleLimit)
 {
-    //srand(time(NULL) * (blob2Index+1));
     velMax = (velMax + blob2.velMax) / 2;                           // Calculamos el promedio de las velocidades.
 
     int randomJiggle = rand() % randomJiggleLimit;                  // Definimos el angulo aleatorio.
@@ -336,9 +334,9 @@ int morir(Blob objeto[], unsigned int& blobCounter) {
         contador = 0;
         for (unsigned int i = 0; i < blobCounter; i++) {
             if (objeto[i].isAlive == true) {
-                int probabilidad = ((rand() % 100) + 1);
-                std::cout << "Prob:  " << probabilidad << "\t Tick:" << objeto[i].tickAlive;
-                if (probabilidad >= objeto[i].tickAlive) {
+                float probabilidad = (float)(rand() % 100)/ (float)(100);
+                std::cout << "Probabilidad: \t"  << probabilidad << "\t Tick:" << objeto[i].tickAlive;
+                if (probabilidad <= objeto[i].tickAlive) {
                     objeto[i].isAlive = false;
                     swap(objeto, i, blobCounter);
                     blobCounter--;

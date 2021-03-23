@@ -30,7 +30,7 @@ public:
         velMax = 0;
     };
 
-    void blobRand(int velMax_, int i, int modo, int muertesPorcentaje[]);
+    void blobRand(int velMax_, int i, int modo, float muertesPorcentaje[]);
     void blobLocate(double posx, double posy);
     void nacimiento(Blob objeto);
     void moverBlob(double velPorcentaje);

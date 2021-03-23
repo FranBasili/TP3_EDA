@@ -20,7 +20,7 @@ public:
     int modo;
     int smellRadius; //Radio de detecci�n de la comida desde el centro del Blob.
     int randomJiggleLimit;//Valor aleatorio a sumar para el c�lculo de la direcci�n. 
-    int muertePorcentage[3];
+    float muertePorcentage[3];
 
     World() {                        //me crea y me construye a todas las clases incluidas en el mundo
 
@@ -31,9 +31,9 @@ public:
         modo = 1;
         smellRadius = 20;
         randomJiggleLimit = 90;
-        muertePorcentage[0] = 25;
-        muertePorcentage[1] = 50;
-        muertePorcentage[2] = 75;
+        muertePorcentage[0] = 0.25;
+        muertePorcentage[1] = 0.5;
+        muertePorcentage[2] = 0.75;
 
     }
     void initWorld();

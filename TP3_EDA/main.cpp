@@ -62,16 +62,14 @@ int main(int argc, char* argv[]) {
  * **************************************************************************************/
 int parseCallback(char* key, char* value, void* userData)
 {
-    World* Data = (World*)userData;   // "Casteamos" el puntero al formato de nuestra
-                                // estructura.
+    World* Data = (World*) userData;   // "Casteamos" el puntero al formato de nuestra
+                                       // estructura.
+
+    std::cout << key << std::endl;
+
 
      float tempf = atof(value);     // Transformamos el value a float.
      int tempi = atoi(value);       // Transformamos el value a entero.
-
-    if (!tempf || !tempi)
-    {
-        return ERROR_CALLBACK;
-    }
 
     if (!strcmp(key, "vM"))         // Dependiendo de la key ingresada, guardamos el dato 
     {                               //ingresado en un campo distinto.
@@ -85,7 +83,7 @@ int parseCallback(char* key, char* value, void* userData)
     else if (!strcmp(key, "vP"))
     {
         
-        if (tempf >= 0 && tempf <= 100)
+        if (tempf > 0 && tempf <= 1)
             Data->velPorcentage = tempf;
 
         else
@@ -136,23 +134,25 @@ int parseCallback(char* key, char* value, void* userData)
     }
     else if (!strcmp(key, "mBaby"))
     {
-        if (tempi >= 0 && tempi <= 100)
-            Data->muertePorcentage[0] = tempi;
+        std::cout << "Cargando Baby" << std::endl;
+        if (tempf > 0 && tempf < 1)
+            (Data->muertePorcentage)[0] = tempf;
+
         else
             return  ERROR_CALLBACK;
     }
     else if (!strcmp(key, "mGrown"))
     {
-        if (tempi >= 0 && tempi <= 100)
-            Data->muertePorcentage[1] = tempi;
+        if (tempf > 0 && tempf < 1)
+            (Data->muertePorcentage)[1] = tempf;
 
         else
             return  ERROR_CALLBACK;
     }
     else if (!strcmp(key, "mOld"))
     {
-        if (tempi >= 0 && tempi <= 100)
-            Data->muertePorcentage[2] = tempi;
+        if (tempf > 0 && tempf < 1)
+            (Data->muertePorcentage)[2] = tempf;
 
         else
             return  ERROR_CALLBACK;
