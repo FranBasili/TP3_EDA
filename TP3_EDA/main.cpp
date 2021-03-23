@@ -63,9 +63,6 @@ int parseCallback(char* key, char* value, void* userData)
     World* Data = (World*) userData;   // "Casteamos" el puntero al formato de nuestra
                                        // estructura.
 
-    std::cout << key << std::endl;
-
-
      float tempf = atof(value);     // Transformamos el value a float.
      int tempi = atoi(value);       // Transformamos el value a entero.
 
@@ -132,7 +129,6 @@ int parseCallback(char* key, char* value, void* userData)
     }
     else if (!strcmp(key, "mBaby"))
     {
-        std::cout << "Cargando Baby" << std::endl;
         if (tempf > 0 && tempf < 1)
             (Data->muertePorcentage)[0] = tempf;
 
