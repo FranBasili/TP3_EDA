@@ -12,7 +12,6 @@ int parseCallback(char* key, char* value, void* userData);
 void delay(float number_of_seconds);
 
 int main(int argc, char* argv[]) {
-    int running = true;
     World mundo;
     int contador = 0;
     initializeAllegro();
@@ -20,14 +19,13 @@ int main(int argc, char* argv[]) {
     mundo.initWorld();
     drawWorld(mundo);
     
-    while (running) {
+    while (mundo.running) {
         redirigir(mundo.nBlobs, mundo.nFood, mundo.blobCounter, mundo.foodTotal, mundo.smellRadius);                //los blobs quedan apuntando a la comida mas cercana
         movimiento(mundo.nBlobs, mundo.blobCounter, mundo.velPorcentage);                                           //se mueven
         comer(mundo.nBlobs, mundo.nFood, mundo.blobCounter, mundo.foodTotal);                   //si tiene que comer , comen
         fusionar(mundo.nBlobs, mundo.blobCounter, mundo.randomJiggleLimit);                     //si tienen que fusionarse, se fusionan
         nacer(mundo.nBlobs, mundo.blobCounter);                                                 //chequea si hay nacimientos
-        running = morir(mundo.nBlobs, mundo.blobCounter);
-        
+        mundo.running = morir(mundo.nBlobs, mundo.blobCounter);
         drawWorld(mundo);
         //chequeo parametros de allegro
         delay(SEC_PER_TICK);
