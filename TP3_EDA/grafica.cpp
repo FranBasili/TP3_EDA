@@ -31,6 +31,8 @@ using namespace std;
 void printVar(int pointer, World& world);
 void printBlobs(World& world);
 void printFood(World& world);
+void checkVar(int& pointer, World& world);
+
 
 void initializeAllegro() 
 {
@@ -91,9 +93,115 @@ void drawWorld(World& world) {
     printBlobs(world);
     printFood(world);
     printVar(pointer, world);
+    checkVar(pointer, world);
     al_flip_display();
+}
+
+void shutdownAllegro(void) {
+
+    al_destroy_font(font);
+    al_destroy_display(display);
+    al_destroy_event_queue(queue);
+    al_destroy_timer(timer);
+    al_destroy_bitmap(bitmapBackground);
+    al_destroy_bitmap(bitmapBabyBlob);
+    al_destroy_bitmap(bitmapGrownBlob);
+    al_destroy_bitmap(bitmapGoodOldBlob);
+    al_destroy_bitmap(bitmapFood);
+    al_shutdown_image_addon();
+    al_shutdown_font_addon();
+    al_shutdown_ttf_addon();
+    al_uninstall_keyboard();
+    al_uninstall_mouse();
+
+}
+
+void printVar(int pointer, World& world)
+{
+    char temp[30];
+
+    if (pointer == MODO)
+        sprintf_s(temp, "-> Modo: %d", world.modo);
+    else
+        sprintf_s(temp, "Modo: %d", world.modo);
+    al_draw_text(font, FONT_COLOR, POS(MODO), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
 
 
+    if (pointer == VP)
+        sprintf_s(temp, "-> V.Porc: %.2f", world.velPorcentage);
+    else
+        sprintf_s(temp, "Vel Porc: %.2f", world.velPorcentage);
+    al_draw_text(font, FONT_COLOR, POS(VP), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
+
+    if (pointer == VM)
+        sprintf_s(temp, "-> V.Max: %.2f", world.velMax);
+    else
+        sprintf_s(temp, "VelMax: %.2f", world.velMax);
+    al_draw_text(font, FONT_COLOR, POS(VM), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
+
+
+    if (pointer == FC)
+        sprintf_s(temp, "-> Comida: %d", world.foodTotal);
+    else
+        sprintf_s(temp, "Comida: %d", world.foodTotal);
+    al_draw_text(font, FONT_COLOR, POS(FC), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
+
+
+    if (pointer == MBABY)
+        sprintf_s(temp, "-> M. Baby: %.2f", world.muertePorcentage[0]);
+    else
+        sprintf_s(temp, "M. Baby: %.2f", world.muertePorcentage[0]);
+    al_draw_text(font, FONT_COLOR, POS(MBABY), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
+
+
+    if (pointer == MGROWN)
+        sprintf_s(temp, "-> M. Grown: %.2f", world.muertePorcentage[1]);
+    else
+        sprintf_s(temp, "M. Grown: %.2f", world.muertePorcentage[1]);
+    al_draw_text(font, FONT_COLOR, POS(MGROWN), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
+
+
+    if (pointer == MOLD)
+        sprintf_s(temp, "-> M. Old: %.2f", world.muertePorcentage[2]);
+    else
+        sprintf_s(temp, "M. Old: %.2f", world.muertePorcentage[2]);
+    al_draw_text(font, FONT_COLOR, POS(MOLD), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
+
+
+    if (pointer == SR)
+        sprintf_s(temp, "-> Smell: %d", world.smellRadius);
+    else
+        sprintf_s(temp, "Smell: %d", world.smellRadius);
+    al_draw_text(font, FONT_COLOR, POS(SR), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
+}
+
+void printBlobs(World& world)
+{
+    for (unsigned int i = 0; i < world.blobCounter; i++) {
+        switch (world.nBlobs[i].age) {
+        case BABY:
+            al_draw_rotated_bitmap(bitmapBabyBlob, BABY_IMG_SIZE / 2, BABY_IMG_SIZE / 2, world.nBlobs[i].blobPos.x, world.nBlobs[i].blobPos.y, ANGLEALLEGRO(world.nBlobs[i].angle), 0);
+            break;
+        case GROWN:
+            al_draw_rotated_bitmap(bitmapGrownBlob, GROWN_IMG_SIZE / 2, GROWN_IMG_SIZE / 2, world.nBlobs[i].blobPos.x, world.nBlobs[i].blobPos.y, ANGLEALLEGRO(world.nBlobs[i].angle), 0);
+            break;
+        case OLD:
+            al_draw_rotated_bitmap(bitmapGoodOldBlob, OLD_IMG_SIZE / 2, OLD_IMG_SIZE / 2, world.nBlobs[i].blobPos.x, world.nBlobs[i].blobPos.y, ANGLEALLEGRO(world.nBlobs[i].angle), 0);
+            break;
+        }
+    }
+
+}
+
+void printFood (World& world)
+{
+    for (unsigned int j = 0; j < world.foodTotal; j++) 
+    {
+        al_draw_bitmap(bitmapFood, world.nFood[j].foodPos.x, world.nFood[j].foodPos.y, 0);
+    }
+}
+
+void checkVar(int& pointer, World& world) {
     al_get_next_event(queue, &event);
     al_get_keyboard_state(&keyState);
 
@@ -119,7 +227,7 @@ void drawWorld(World& world) {
         switch (pointer)
         {
         case VM:
-            world.velMax += 0.5;
+            world.velMax += 1;
             break;
 
         case MODO:
@@ -161,7 +269,8 @@ void drawWorld(World& world) {
         switch (pointer)
         {
         case VM:
-            world.velMax -= 0.5;
+            if(world.velMax>=1)
+                world.velMax -= 1;
             break;
 
         case MODO:
@@ -199,112 +308,5 @@ void drawWorld(World& world) {
                 world.smellRadius -= 5;
             break;
         }
-    }
-
-}
-
-void shutdownAllegro(void) {
-
-    al_destroy_font(font);
-    al_destroy_display(display);
-    al_destroy_event_queue(queue);
-    al_destroy_timer(timer);
-    al_destroy_bitmap(bitmapBackground);
-    al_destroy_bitmap(bitmapBabyBlob);
-    al_destroy_bitmap(bitmapGrownBlob);
-    al_destroy_bitmap(bitmapGoodOldBlob);
-    al_destroy_bitmap(bitmapFood);
-    al_shutdown_image_addon();
-    al_shutdown_font_addon();
-    al_shutdown_ttf_addon();
-    al_uninstall_keyboard();
-    al_uninstall_mouse();
-
-}
-
-void printVar(int pointer, World& world)
-{
-    char temp[30];
-
-    if (pointer == MODO)
-        sprintf_s(temp, "-> Modo: %d", world.modo);
-    else
-        sprintf_s(temp, "Modo: %d", world.modo);
-    al_draw_text(font, al_color_name("black"), POS(MODO), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
-
-
-    if (pointer == VP)
-        sprintf_s(temp, "-> Vel Porc: %.2f", world.velPorcentage);
-    else
-        sprintf_s(temp, "Vel Porc: %.2f", world.velPorcentage);
-    al_draw_text(font, al_color_name("black"), POS(VP), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
-
-
-
-    if (pointer == VM)
-        sprintf_s(temp, "-> VelMax: %.2f", world.velMax);
-    else
-        sprintf_s(temp, "VelMax: %.2f", world.velMax);
-    al_draw_text(font, al_color_name("black"), POS(VM), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
-
-
-    if (pointer == FC)
-        sprintf_s(temp, "-> Comida: %d", world.foodTotal);
-    else
-        sprintf_s(temp, "Comida: %d", world.foodTotal);
-    al_draw_text(font, al_color_name("black"), POS(FC), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
-
-
-    if (pointer == MBABY)
-        sprintf_s(temp, "-> M. Baby: %.2f", world.muertePorcentage[0]);
-    else
-        sprintf_s(temp, "M. Baby: %.2f", world.muertePorcentage[0]);
-    al_draw_text(font, al_color_name("black"), POS(MBABY), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
-
-
-    if (pointer == MGROWN)
-        sprintf_s(temp, "-> M. Grown: %.2f", world.muertePorcentage[1]);
-    else
-        sprintf_s(temp, "M. Grown: %.2f", world.muertePorcentage[1]);
-    al_draw_text(font, al_color_name("black"), POS(MGROWN), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
-
-
-    if (pointer == MOLD)
-        sprintf_s(temp, "-> M. Old: %.2f", world.muertePorcentage[2]);
-    else
-        sprintf_s(temp, "M. Old: %.2f", world.muertePorcentage[2]);
-    al_draw_text(font, al_color_name("black"), POS(MOLD), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
-
-
-    if (pointer == SR)
-        sprintf_s(temp, "-> Smell: %d", world.smellRadius);
-    else
-        sprintf_s(temp, "Smell: %d", world.smellRadius);
-    al_draw_text(font, al_color_name("black"), POS(SR), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
-}
-
-void printBlobs(World& world)
-{
-    for (unsigned int i = 0; i < world.blobCounter; i++) {
-        switch (world.nBlobs[i].age) {
-        case BABY:
-            al_draw_rotated_bitmap(bitmapBabyBlob, BABY_IMG_SIZE / 2, BABY_IMG_SIZE / 2, world.nBlobs[i].blobPos.x, world.nBlobs[i].blobPos.y, ANGLEALLEGRO(world.nBlobs[i].angle), 0);
-            break;
-        case GROWN:
-            al_draw_rotated_bitmap(bitmapGrownBlob, GROWN_IMG_SIZE / 2, GROWN_IMG_SIZE / 2, world.nBlobs[i].blobPos.x, world.nBlobs[i].blobPos.y, ANGLEALLEGRO(world.nBlobs[i].angle), 0);
-            break;
-        case OLD:
-            al_draw_rotated_bitmap(bitmapGoodOldBlob, OLD_IMG_SIZE / 2, OLD_IMG_SIZE / 2, world.nBlobs[i].blobPos.x, world.nBlobs[i].blobPos.y, ANGLEALLEGRO(world.nBlobs[i].angle), 0);
-            break;
-        }
-    }
-
-}
-
-void printFood (World& world)
-{
-    for (unsigned int j = 0; j < world.foodTotal; j++) 
-    {
-        al_draw_bitmap(bitmapFood, world.nFood[j].foodPos.x, world.nFood[j].foodPos.y, 0);
     }
 }
