@@ -231,8 +231,15 @@ void checkVar(int& pointer, World& world) {
             break;
 
         case MODO:
-            if (world.modo == 1)
+            if (world.modo < 2)
+            {
                 world.modo++;
+                for (int i = 0; i < world.blobCounter; i++)
+                {
+                    world.nBlobs[i].setVel(world.velMax*100, world.modo);
+                    std::cout  << std::endl;
+                }
+            }    
             break;
 
         case VP:
@@ -255,8 +262,8 @@ void checkVar(int& pointer, World& world) {
             break;
 
         case MOLD:
-            if (world.muertePorcentage[1] <= 0.95)
-                world.muertePorcentage[1] += 0.05;
+            if (world.muertePorcentage[2] <= 0.95)
+                world.muertePorcentage[2] += 0.05;
             break;
 
         case SR:
@@ -269,13 +276,20 @@ void checkVar(int& pointer, World& world) {
         switch (pointer)
         {
         case VM:
-            if(world.velMax>=1)
+            if(world.velMax>1)
                 world.velMax -= 1;
             break;
 
         case MODO:
-            if (world.modo == 2)
+            if (world.modo >= 2)
+            {
                 world.modo--;
+                for (int i = 0; i < world.blobCounter; i++)
+                {
+                    world.nBlobs[i].setVel(world.velMax * 100, world.modo);
+                    std::cout << std::endl;
+                }
+            }
             break;
 
         case VP:

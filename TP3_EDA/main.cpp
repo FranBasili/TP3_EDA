@@ -25,11 +25,11 @@ int main(int argc, char* argv[]) {
         comer(mundo.nBlobs, mundo.nFood, mundo.blobCounter, mundo.foodTotal);                   //si tiene que comer , comen
         fusionar(mundo.nBlobs, mundo.blobCounter, mundo.randomJiggleLimit);                     //si tienen que fusionarse, se fusionan
         nacer(mundo.nBlobs, mundo.blobCounter);                                                 //chequea si hay nacimientos
-        mundo.running = morir(mundo.nBlobs, mundo.blobCounter);
+        mundo.running = morir(mundo.nBlobs, mundo.blobCounter, mundo.muertePorcentage);
         drawWorld(mundo);
-        //chequeo parametros de allegro
         delay(SEC_PER_TICK);
     }
+
     shutdownAllegro();
     return 0;
 

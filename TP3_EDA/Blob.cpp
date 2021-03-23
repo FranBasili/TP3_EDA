@@ -21,26 +21,23 @@ BLOBRAND:
 
     Retorna: void
 ****************************************************************/
-void Blob::blobRand(int velMax_, int i, int modo, float muertesPorcentaje[])
+void Blob::blobRand(float muertesPorcentaje[])
 {
     blobPos.x = (double)(rand() % DISPLAYWIDTH);           //checkear los maximos valores que puede obtener
     blobPos.y = (double)(rand() % DISPLAYHEIGHT);
     age = (int)(1 + rand() % 3);                                //se asigna una edad aleatoria, va de 1 a 3
     tickAlive = muertesPorcentaje[age - 1];
     angle = rand() % 360;
-
-    if (modo == 2)
-    {
-        velMax = rand() % velMax_;
-        velMax /= 100;
-    }
-    else if (modo == 1)
-    {
-        velMax = velMax_;
-        velMax /= 100;
-    }
 }
 
+void Blob::setVel(int velMax_, int modo)
+{
+    if (modo == 2)
+        velMax = (float) (rand() % velMax_) / (float) 100;
+    else if (modo == 1)
+        velMax = (float) velMax_ / (float)100;
+    
+}
 
 
 /****************************************************************
@@ -321,7 +318,7 @@ MORIR:
     Retorna:    0 si no hay blobs vivos.
                 1 si hay algún blob vivo.
 ****************************************************************/
-int morir(Blob objeto[], unsigned int& blobCounter) {
+int morir(Blob objeto[], unsigned int& blobCounter, float morirPorcentaje[]) {
 
     static int contador = 0;
 
@@ -333,16 +330,14 @@ int morir(Blob objeto[], unsigned int& blobCounter) {
     {   
         contador = 0;
         for (unsigned int i = 0; i < blobCounter; i++) {
-            if (objeto[i].isAlive == true) {
-                float probabilidad = (float)(rand() % 100)/ (float)(100);
-                std::cout << "Probabilidad: \t"  << probabilidad << "\t Tick:" << objeto[i].tickAlive;
-                if (probabilidad <= objeto[i].tickAlive) {
+            if (objeto[i].isAlive == true) 
+            {
+                objeto[i].tickAlive = (float)(rand() % 100)/ (float)(100);                
+                if (objeto[i].tickAlive < morirPorcentaje[(objeto[i].age-1)]) {
                     objeto[i].isAlive = false;
                     swap(objeto, i, blobCounter);
                     blobCounter--;
-                    std::cout << " \t MUERTO";
                 }
-                std::cout << std::endl;
             }
         }
 
@@ -352,8 +347,6 @@ int morir(Blob objeto[], unsigned int& blobCounter) {
             return 1;               // Si ha blobs vivos, sigo corriendo la simulacion
     }
 }
-
-
 
 
 /****************************************************************

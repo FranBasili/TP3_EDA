@@ -30,12 +30,13 @@ public:
         velMax = 0;
     };
 
-    void blobRand(int velMax_, int i, int modo, float muertesPorcentaje[]);
+    void blobRand(float muertesPorcentaje[]);
     void blobLocate(double posx, double posy);
     void nacimiento(Blob objeto);
     void moverBlob(double velPorcentaje);
     void redireccion(Food food[], int cantFood, int smellRadius);
     void fusion(Blob blob2, int blob2Index, unsigned int& blobCounter, int randomJiggleLimit);
+    void setVel(int velMax, int modo);
 };
 
 /*****************************************************************************************
@@ -47,5 +48,5 @@ void redirigir(Blob blobs[], Food foods[], int blobCounter, int cantFood, int sm
 void comer(Blob blobs[], Food foods[], int blobCounter, int cantFood);
 void fusionar(Blob blobs[], unsigned int& blobCounter, int randomJiggleLimit);
 void movimiento(Blob blobs[], unsigned int blobCounter, double velPorcentaje);
-int morir(Blob objeto[], unsigned int& blobCounter);
+int morir(Blob objeto[], unsigned int& blobCounter, float morirPorcentaje[]);
 #endif // BLOBS
