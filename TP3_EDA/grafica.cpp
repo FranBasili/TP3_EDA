@@ -12,7 +12,7 @@
 #include <iostream>
 #include <stdio.h>
 
-enum PARAMS {MODO, VP, VM, FC, MBABY, MGROWN, MOLD, SR};
+enum PARAMS {MODO, VP, VM, FC, MBABY, MGROWN, MOLD, SR, RJL};
 static ALLEGRO_DISPLAY* display;
 static ALLEGRO_EVENT_QUEUE* queue;
 static ALLEGRO_TIMER* timer;
@@ -165,13 +165,13 @@ void printVar(int pointer, World& world)
     if (pointer == VP)
         sprintf_s(temp, "-> V.Porc: %.2f", world.velPorcentage);
     else
-        sprintf_s(temp, "Vel Porc: %.2f", world.velPorcentage);
+        sprintf_s(temp, "V.Porc: %.2f", world.velPorcentage);
     al_draw_text(font, FONT_COLOR, POS(VP), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
 
     if (pointer == VM)
         sprintf_s(temp, "-> V.Max: %.2f", world.velMax);
     else
-        sprintf_s(temp, "VelMax: %.2f", world.velMax);
+        sprintf_s(temp, "V.Max: %.2f", world.velMax);
     al_draw_text(font, FONT_COLOR, POS(VM), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
 
 
@@ -183,23 +183,23 @@ void printVar(int pointer, World& world)
 
 
     if (pointer == MBABY)
-        sprintf_s(temp, "-> M. Baby: %.2f", world.muertePorcentage[0]);
+        sprintf_s(temp, "-> Baby: %.2f", world.muertePorcentage[0]);
     else
-        sprintf_s(temp, "M. Baby: %.2f", world.muertePorcentage[0]);
+        sprintf_s(temp, "Baby: %.2f", world.muertePorcentage[0]);
     al_draw_text(font, FONT_COLOR, POS(MBABY), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
 
 
     if (pointer == MGROWN)
-        sprintf_s(temp, "-> M. Grown: %.2f", world.muertePorcentage[1]);
+        sprintf_s(temp, "-> Grown: %.2f", world.muertePorcentage[1]);
     else
-        sprintf_s(temp, "M. Grown: %.2f", world.muertePorcentage[1]);
+        sprintf_s(temp, "Grown: %.2f", world.muertePorcentage[1]);
     al_draw_text(font, FONT_COLOR, POS(MGROWN), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
 
 
     if (pointer == MOLD)
-        sprintf_s(temp, "-> M. Old: %.2f", world.muertePorcentage[2]);
+        sprintf_s(temp, "-> Old: %.2f", world.muertePorcentage[2]);
     else
-        sprintf_s(temp, "M. Old: %.2f", world.muertePorcentage[2]);
+        sprintf_s(temp, "Old: %.2f", world.muertePorcentage[2]);
     al_draw_text(font, FONT_COLOR, POS(MOLD), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
 
 
@@ -208,6 +208,12 @@ void printVar(int pointer, World& world)
     else
         sprintf_s(temp, "Smell: %d", world.smellRadius);
     al_draw_text(font, FONT_COLOR, POS(SR), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
+
+    if (pointer == RJL)
+        sprintf_s(temp, "-> RJL: %d", world.randomJiggleLimit);
+    else
+        sprintf_s(temp, "RJL: %d", world.randomJiggleLimit);
+    al_draw_text(font, FONT_COLOR, POS(RJL), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
 }
 
 /****************************************************************
@@ -288,7 +294,7 @@ void checkVar(int& pointer, World& world) {
         switch (pointer)
         {
         case VM:
-            world.velMax += 1;
+            world.velMax += 5;
             break;
 
         case MODO:
@@ -298,7 +304,6 @@ void checkVar(int& pointer, World& world) {
                 for (int i = 0; i < world.blobCounter; i++)
                 {
                     world.nBlobs[i].setVel(world.velMax*100, world.modo);
-                    std::cout  << std::endl;
                 }
             }    
             break;
@@ -306,6 +311,8 @@ void checkVar(int& pointer, World& world) {
         case VP:
             if (world.velPorcentage <= 0.95)
                 world.velPorcentage += 0.05;
+            else if (world.velPorcentage <= 1)
+                world.velPorcentage =1;
             break;
 
         case FC:
@@ -330,6 +337,12 @@ void checkVar(int& pointer, World& world) {
         case SR:
             world.smellRadius += 5;
             break;
+
+        case RJL:
+            if (world.randomJiggleLimit <= 350)
+            {
+                world.randomJiggleLimit+=10;
+            }
         }
     }
     else if (al_key_down(&keyState, ALLEGRO_KEY_DOWN))
@@ -337,8 +350,8 @@ void checkVar(int& pointer, World& world) {
         switch (pointer)
         {
         case VM:
-            if(world.velMax>1)
-                world.velMax -= 1;
+            if(world.velMax>=5)
+                world.velMax -= 5;
             break;
 
         case MODO:
@@ -348,14 +361,19 @@ void checkVar(int& pointer, World& world) {
                 for (int i = 0; i < world.blobCounter; i++)
                 {
                     world.nBlobs[i].setVel(world.velMax * 100, world.modo);
-                    std::cout << std::endl;
                 }
             }
             break;
 
         case VP:
             if (world.velPorcentage >= 0.05)
+            {
                 world.velPorcentage -= 0.05;
+            }
+            else if (world.velPorcentage > 0)
+            {
+                world.velPorcentage = 0;
+            }
             break;
 
         case FC:
@@ -382,6 +400,12 @@ void checkVar(int& pointer, World& world) {
             if (world.smellRadius >= 5)
                 world.smellRadius -= 5;
             break;
+
+        case RJL:
+            if (world.randomJiggleLimit >= 10)
+            {
+                world.randomJiggleLimit-=10;
+            }
         }
     }
 }

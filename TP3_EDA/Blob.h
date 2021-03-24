@@ -26,7 +26,7 @@ public:
         age = 1;                                //se asigna una edad aleatoria, va de 1 a 3
         foodCount = 0;
         tickAlive = 0;
-        isAlive = true;
+        isAlive = false;
         velMax = 0;
     };
 

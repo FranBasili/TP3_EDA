@@ -12,29 +12,30 @@ int parseCallback(char* key, char* value, void* userData);
 void delay(float number_of_seconds);
 
 int main(int argc, char* argv[]) {
-    World mundo;
-    int contador = 0;
-    initializeAllegro();
-    parseCmdLine(argc, argv, parseCallback, &mundo);                // Probado el parseo.
-    mundo.initWorld();
-    drawWorld(mundo);
+    World mundo;                
+    initializeAllegro();                                // Inicializamos allegro.
+    parseCmdLine(argc, argv, parseCallback, &mundo);    // Parseamos los comandos de la consola.            
+    mundo.initWorld();                                  // Iniciamos el mundo dandole param. a los blobs y a las foods.
+    drawWorld(mundo);                                   // Mostramos el estado inicial de la simulación.
     
     while (mundo.running) {
-        redirigir(mundo.nBlobs, mundo.nFood, mundo.blobCounter, mundo.foodTotal, mundo.smellRadius);                //los blobs quedan apuntando a la comida mas cercana
-        movimiento(mundo.nBlobs, mundo.blobCounter, mundo.velPorcentage);                                           //se mueven
-        comer(mundo.nBlobs, mundo.nFood, mundo.blobCounter, mundo.foodTotal);                   //si tiene que comer , comen
-        fusionar(mundo.nBlobs, mundo.blobCounter, mundo.randomJiggleLimit);                     //si tienen que fusionarse, se fusionan
-        nacer(mundo.nBlobs, mundo.blobCounter);                                                 //chequea si hay nacimientos
-        mundo.running = morir(mundo.nBlobs, mundo.blobCounter, mundo.muertePorcentage);
-        drawWorld(mundo);
-        delay(SEC_PER_TICK);
+        redirigir(mundo.nBlobs, mundo.nFood, mundo.blobCounter, mundo.foodTotal, mundo.smellRadius);    // Los blob apuntan a la comida visible mas cercan.
+        movimiento(mundo.nBlobs, mundo.blobCounter, mundo.velPorcentage);                               // Los blobs se mueven.
+        comer(mundo.nBlobs, mundo.nFood, mundo.blobCounter, mundo.foodTotal);                           // Si pueden comer, comen.
+        fusionar(mundo.nBlobs, mundo.blobCounter, mundo.randomJiggleLimit);                             // si tienen que fusionarse, se fusionan.
+        nacer(mundo.nBlobs, mundo.blobCounter);                                                         // Hago los nacimientos en los casos necesarios.
+        mundo.running = morir(mundo.nBlobs, mundo.blobCounter, mundo.muertePorcentage);                 // Mato a los blobs que le toque.
+        drawWorld(mundo);                                                                               // Muestro en pantalla la simulación y analizo los parametros de simulacion.
+        delay(SEC_PER_TICK);                                                                            // Esperamos el tiempo de un tick.
     }
 
-    shutdownAllegro();
+    shutdownAllegro();  // Una vez finalizada la simulación, destruimos todo lo de allegro.
     return 0;
 
 
     /*
+        Resumen del main:
+
         Inicializar Back.
         Inicializar arreglo.
 
@@ -47,6 +48,8 @@ int main(int argc, char* argv[]) {
         6. Determinar muertes
         7. Revisar eventos allegro
         8. Mostrar en Allegro
+
+        Destruir recursos.
     */
 }
 

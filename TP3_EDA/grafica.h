@@ -4,7 +4,7 @@
 
 #include "World.h"
 
-#define CANT_OPCIONES   8
+#define CANT_OPCIONES   9
 #define OFFSETX     0
 #define OFFSETY     5
 #define POS(x)      ( ((x)+0.5) * DISPLAYWIDTH / CANT_OPCIONES + OFFSETX)   

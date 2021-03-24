@@ -28,6 +28,7 @@ void Blob::blobRand(float muertesPorcentaje[])
     age = (int)(1 + rand() % 3);                                //se asigna una edad aleatoria, va de 1 a 3
     tickAlive = muertesPorcentaje[age - 1];
     angle = rand() % 360;
+    isAlive = true;
 }
 
 void Blob::setVel(int velMax_, int modo)
@@ -322,6 +323,20 @@ int morir(Blob objeto[], unsigned int& blobCounter, float morirPorcentaje[]) {
 
     static int contador = 0;
 
+
+    int blobs_counter = 0;
+    for (int i = 0; i < MAXBLOBS; i++)  // Recorro 1 por uno los blobs
+    {
+        if (objeto[i].isAlive == true)
+        {
+            blobs_counter++;            // Si hay alguno vivo, incremento el contador
+        }
+    }
+
+    if (blobs_counter == 0)
+        return 0;                       // Si no hay blobs vivos, retorno 0
+
+    
     if ((contador++) < TICKS_PER_DEATH)     // Si no pasaron la cantidad de ticks necesarios,
     {                                       //no asesinamos a nadie.
         return 1;                           
@@ -340,11 +355,10 @@ int morir(Blob objeto[], unsigned int& blobCounter, float morirPorcentaje[]) {
                 }
             }
         }
-
-        if (blobCounter == 0)       // Si no quedaron blobs vivos, retorno 0.
+        if (blobCounter == 0)       // Si no quedaron blobs vivos despues de la matanza, retorno 0.
             return 0;
         else
-            return 1;               // Si ha blobs vivos, sigo corriendo la simulacion
+            return 1;               // Si hay blobs vivos, sigo corriendo la simulacion
     }
 }
 
