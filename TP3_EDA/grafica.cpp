@@ -28,12 +28,22 @@ static ALLEGRO_KEYBOARD_STATE keyState;
 
 using namespace std;
 
+/*****************************************************************************************
+*                                       Prototipos
+****************************************************************************************/
 void printVar(int pointer, World& world);
 void printBlobs(World& world);
 void printFood(World& world);
 void checkVar(int& pointer, World& world);
 
+/****************************************************************
+INITIALIZEALLEGRO:
+->Descripcion:inicializa todo lo relacionado allegro, carga los bitmaps , los eventos y controla que los mismos esten correctamente cargados
+        void
 
+    Retorna:
+        void
+****************************************************************/
 void initializeAllegro() 
 {
     if (! al_init() ) 
@@ -84,6 +94,14 @@ void initializeAllegro()
     }
 }
 
+/****************************************************************
+DRAWWORLD:
+->Descripcion:funcion que va renderizar todo lo propio a las clases de world, blob, food y sus correspondientes funciones
+        1. World &: recibe una referencia a world ,que es una clase que contiene toda la informacion del mundo
+
+    Retorna:
+        void
+****************************************************************/
 void drawWorld(World& world) {
     static int pointer = 0;
     static bool keys[4] = { false, false, false, false };
@@ -97,6 +115,14 @@ void drawWorld(World& world) {
     al_flip_display();
 }
 
+/****************************************************************
+SHUTDOWNALLEGRO:
+->Descripcion: funcion que destruye todos los recursos usados para renderizar el programa
+        void
+
+    Retorna:
+        void
+****************************************************************/
 void shutdownAllegro(void) {
 
     al_destroy_font(font);
@@ -116,6 +142,15 @@ void shutdownAllegro(void) {
 
 }
 
+/****************************************************************
+PRINTVAR:
+->Descripcion:funcion que imprime el valor de las variables pasadas por el usuario
+        1. int pointer: recibe un int que contiene el parametro
+        2. World &: recibe una referencia a world ,que es una clase que contiene toda la informacion del mundo
+
+    Retorna:
+        void
+****************************************************************/
 void printVar(int pointer, World& world)
 {
     char temp[30];
@@ -175,6 +210,14 @@ void printVar(int pointer, World& world)
     al_draw_text(font, FONT_COLOR, POS(SR), OFFSETY, ALLEGRO_ALIGN_CENTER, temp);
 }
 
+/****************************************************************
+PRINTBLOBS:
+->Descripcion: funcion que grafica los blobs con su debida rotacion
+        1.World& world: recbe toda la informacon necesaria en la clase world para graficar el blob
+
+    Retorna:
+        void
+****************************************************************/
 void printBlobs(World& world)
 {
     for (unsigned int i = 0; i < world.blobCounter; i++) {
@@ -193,6 +236,14 @@ void printBlobs(World& world)
 
 }
 
+/****************************************************************
+PRINTFOOD:
+->Descripcion: funcion que grafica los blobs con su debida rotacion
+        1.World& world: recbe toda la informacon necesaria en la clase world para graficar el blob
+
+    Retorna:
+        void
+****************************************************************/
 void printFood (World& world)
 {
     for (unsigned int j = 0; j < world.foodTotal; j++) 
@@ -201,6 +252,16 @@ void printFood (World& world)
     }
 }
 
+
+/****************************************************************
+CHECKVAR:
+->Descripcion: funcion que grafica los blobs con su debida rotacion
+        1.int& pointer: recibe una referencia a int que contiene el parametro
+        2.World& world: recbe toda la informacon necesaria en la clase world para graficar el blob
+
+    Retorna:
+        void
+****************************************************************/
 void checkVar(int& pointer, World& world) {
     al_get_next_event(queue, &event);
     al_get_keyboard_state(&keyState);
